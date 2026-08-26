@@ -14,6 +14,33 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/**
+ * @section 回退字体度量对齐（抑制 FOUT 引起的 CLS）
+ * @description swap 策略下，回退字体在 webfont 到达前先排版。通过 size-adjust / ascent-override
+ * 对齐行框高度，使 Hero 的 clamp 大字在 Georgia ↔ EB Garamond 切换时不产生换行跳变。
+ * 数值以本地 Georgia / PingFang SC 为基准近似对齐，目标为 < 1px 行高差。
+ */
+@font-face {
+  font-family: "EB Garamond Fallback";
+  src: local("Georgia");
+  size-adjust: 105.5%;
+  ascent-override: 92%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Noto Serif SC Fallback";
+  src:
+    local("PingFang SC"),
+    local("Hiragino Sans GB"),
+    local("Microsoft YaHei");
+  size-adjust: 100%;
+  ascent-override: 98%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+}
+
 
 /**
  * @section CSS 自定义属性（变量）定义
@@ -32,8 +59,10 @@
     "Hiragino Sans GB", /* Windows */ "Microsoft YaHei", "Microsoft YaHei UI", /* Linux/Android */ "Noto Sans CJK SC",
     "WenQuanYi Micro Hei", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 
-  /* 展示衬线字体：西文走 EB Garamond，中文逐字符回退到思源宋体（@fontsource 自托管、按 unicode-range 分包） */
-  --font-family-display: "EB Garamond", "Noto Serif SC", Georgia, "Times New Roman", serif;
+  /* 展示衬线字体：EB Garamond / Noto Serif SC 为主，回退族经 size-adjust 对齐以抑制 swap 时的 CLS */
+  --font-family-display:
+    "EB Garamond", "EB Garamond Fallback", "Noto Serif SC", "Noto Serif SC Fallback", Georgia,
+    "Times New Roman", serif;
 
   /* Noto Sans 字体栈，用于需要特定字体的场景 */
   --font-noto-sans:
@@ -116,6 +145,8 @@ body {
  */
 .display-font {
   font-family: var(--font-family-display);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
 }
 
 /**
@@ -128,6 +159,7 @@ body {
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.18em;
+  font-synthesis: none;
 }
 
 /**
@@ -172,20 +204,24 @@ body {
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px); /* 从下方淡入 */
   }
   to {
     opacity: 1;
-    transform: translateY(0); /* 到达最终位置 */
   }
 }
 
 /**
- * @section 淡入动画类
+ * @section 淡入动画类（仅透明度，不含位移，避免触及滚动锚定）
  */
 .animate-fade-in {
   animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in {
+    animation: none !important;
+  }
+}
+
 
 /**
  * @section 卡片遮罩层过渡效果
@@ -205,6 +241,11 @@ body {
 .rich-text strong {
   color: inherit;
   font-weight: 600;
+}
+
+.rich-text {
+  text-wrap: pretty;
+  overflow-wrap: break-word;
 }
 
 /**
@@ -382,3 +423,5 @@ body {
   height: 100%;
   display: block;
 }
+
+/* 渲染包含规约：content-visibility:auto 仅用于首屏后两屏之外的长列表，且须以 ResizeObserver 回写实测高度；首屏及近首屏区块禁止使用，避免锚定漂移。 */

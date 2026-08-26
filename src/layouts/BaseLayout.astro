@@ -136,7 +136,7 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
 ---
 
 <!-- HTML文档根元素 --><!doctype html>
-<html lang={htmlLang} class='scroll-smooth'>
+<html lang={htmlLang}>
   <head>
     <!-- 基础元标签 -->
     <meta charset='UTF-8' />
@@ -195,17 +195,16 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
     <!-- Web应用清单 -->
     <link rel='manifest' href='/site.webmanifest' />
 
-    <!-- 字体：@fontsource 自托管衬线（EB Garamond / Noto Serif SC），经构建期打包与预加载优化，正文仍走系统栈 -->
+    <!-- 字体：@fontsource 自托管衬线（EB Garamond / Noto Serif SC），中文按 unicode-range 分包按需加载 -->
 
-    <!-- 图标：使用内联SVG，无需外部图标字体CSS -->
+    <!-- 图标：内联 SVG，无外部字体 CSS -->
 
-    <!-- 图标：使用内联SVG，无需外部图标字体CSS -->
-
-    <!-- View Transitions已移除：减少首屏JS与潜在阻塞 -->
-
-    <!-- 主题初始化脚本 -->
+    <!-- 主题与滚动：单一归属。静态站点不启用 View Transitions；滚动恢复由浏览器 manual 接管，锚点平滑仅在点击时局部生效 -->
     <script is:inline>
       (function () {
+        try {
+          if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+        } catch {}
         function getTheme() {
           if (typeof localStorage !== 'undefined') {
             const stored = localStorage.getItem('theme');
@@ -213,25 +212,24 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
           }
           return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
-
         function applyTheme() {
-          const theme = getTheme();
-          document.documentElement.classList.toggle('dark', theme === 'dark');
+          document.documentElement.classList.toggle('dark', getTheme() === 'dark');
         }
-
-        // 初始化主题
         applyTheme();
-
-        // 监听系统主题变化（当没有手动设置时）
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-          if (!localStorage.getItem('theme')) {
-            document.documentElement.classList.toggle('dark', e.matches);
-          }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+          if (!localStorage.getItem('theme')) document.documentElement.classList.toggle('dark', e.matches);
         });
-
-        // View Transitions：页面切换后重新应用主题
-        // astro:after-swap事件在DOM交换完成后触发
-        document.addEventListener('astro:after-swap', applyTheme);
+        document.addEventListener('click', function (e) {
+          var a = e.target.closest('a[href^="#"]');
+          if (!a) return;
+          var id = a.getAttribute('href').slice(1);
+          if (!id) return;
+          var el = document.getElementById(id);
+          if (!el) return;
+          e.preventDefault();
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          try { history.pushState(null, '', '#' + id); } catch {}
+        });
       })();
     </script>
 
@@ -251,10 +249,8 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
 
   <!-- 页面主体 -->
   <body class='min-h-screen bg-paper text-ink transition-colors duration-300'>
-    <!-- 主内容区域：使用fade过渡动画 -->
     <main
       class='container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-12 sm:py-16 max-w-8xl'
-      transition:animate='fade'
     >
       <!-- 插槽：插入页面内容 -->
       <slot />
