@@ -1,7 +1,42 @@
 ---
 /**
- * 根路径重定向
- * 自动引导用户进入默认语言（中文）首页
+ * 根路径即时重定向
+ * 消除 Astro 默认静态 302 生成的 2 秒延迟与中间占位文字
  */
-return Astro.redirect('/zh_CN/', 302);
 ---
+
+<!doctype html>
+<html lang='zh-CN'>
+  <head>
+    <meta charset='utf-8' />
+    <meta name='robots' content='noindex, follow' />
+    <meta http-equiv='refresh' content='0;url=/zh_CN/' />
+    <link rel='canonical' href='https://wenjiexu.site/zh_CN/' />
+    <title>Redirecting...</title>
+    <style>
+      :root {
+        background-color: #faf8f5;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          background-color: #191715;
+        }
+      }
+    </style>
+    <script is:inline>
+      (function () {
+        var lang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+        var target = lang.startsWith('en') ? '/en_US/' : '/zh_CN/';
+        window.location.replace(target);
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <meta http-equiv='refresh' content='0;url=/zh_CN/' />
+      <p style='display:none'>
+        <a href='/zh_CN/'>Redirecting...</a>
+      </p>
+    </noscript>
+  </body>
+</html>

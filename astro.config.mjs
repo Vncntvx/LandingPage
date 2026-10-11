@@ -101,8 +101,8 @@ export default defineConfig({
     routing: {
       /** 是否为默认语言添加 URL 前缀 */
       prefixDefaultLocale: true,
-      /** 是否自动重定向到默认语言 */
-      redirectToDefaultLocale: true,
+      /** 由 src/pages/index.astro 完全接管根路径即时跳转，禁用 Astro 默认生成的 2 秒延迟重定向模板 */
+      redirectToDefaultLocale: false,
     },
   },
 
