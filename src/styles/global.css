@@ -8,12 +8,21 @@
  * - 动画效果定义
  */
 
-/**
- * @section Tailwind CSS 框架导入
- */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-paper: var(--c-paper);
+  --color-raised: var(--c-raised);
+  --color-ink: var(--c-ink);
+  --color-inksoft: var(--c-inksoft);
+  --color-hairline: var(--c-hairline);
+  --color-vermilion: var(--c-vermilion);
+
+  --font-sans: var(--font-family-base);
+  --font-display: var(--font-family-display);
+}
 /**
  * @section 回退字体度量对齐（抑制 FOUT 引起的 CLS）
  * @description swap 策略下，回退字体在 webfont 到达前先排版。通过 size-adjust / ascent-override
@@ -31,16 +40,12 @@
 
 @font-face {
   font-family: "Noto Serif SC Fallback";
-  src:
-    local("PingFang SC"),
-    local("Hiragino Sans GB"),
-    local("Microsoft YaHei");
+  src: local("PingFang SC"), local("Hiragino Sans GB"), local("Microsoft YaHei");
   size-adjust: 100%;
   ascent-override: 98%;
   descent-override: 22%;
   line-gap-override: 0%;
 }
-
 
 /**
  * @section CSS 自定义属性（变量）定义
@@ -61,8 +66,7 @@
 
   /* 展示衬线字体：EB Garamond / Noto Serif SC 为主，回退族经 size-adjust 对齐以抑制 swap 时的 CLS */
   --font-family-display:
-    "EB Garamond", "EB Garamond Fallback", "Noto Serif SC", "Noto Serif SC Fallback", Georgia,
-    "Times New Roman", serif;
+    "EB Garamond", "EB Garamond Fallback", "Noto Serif SC", "Noto Serif SC Fallback", Georgia, "Times New Roman", serif;
 
   /* Noto Sans 字体栈，用于需要特定字体的场景 */
   --font-noto-sans:
@@ -78,15 +82,15 @@
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
   /**
-   * 「纸张与油墨」色板（RGB 三元组，供 Tailwind 以 rgb(var() / alpha) 消费）
+   * 「纸张与油墨」色板
    * 暗色模式在下方 .dark 中整体翻转，组件无需逐个写 dark: 变体
    */
-  --c-paper: 250 248 245; /* 暖调纸白底 */
-  --c-raised: 243 242 238; /* 浮起面：极浅底纹 */
-  --c-ink: 34 33 32; /* 主墨色（炭黑） */
-  --c-inksoft: 107 101 94; /* 次级墨：灰褐 */
-  --c-hairline: 231 227 220; /* 发丝边界线：极浅灰褐 */
-  --c-vermilion: 158 58 43; /* 朱砂红：全站唯一强调色 */
+  --c-paper: #faf8f5; /* 暖调纸白底 */
+  --c-raised: #f3f2ee; /* 浮起面：极浅底纹 */
+  --c-ink: #222120; /* 主墨色（炭黑） */
+  --c-inksoft: #6b655e; /* 次级墨：灰褐 */
+  --c-hairline: #e7e3dc; /* 发丝边界线：极浅灰褐 */
+  --c-vermilion: #9e3a2b; /* 朱砂红：全站唯一强调色 */
 
   /**
    * 颜色系统变量（旧消费点兼容，值同步到纸墨色板）
@@ -100,10 +104,10 @@
   /**
    * 特殊效果变量
    */
-  --underline-base-color: #e7e3dc; /* 下划线基础颜色 */
+  --underline-base-color: rgba(107, 101, 94, 0.38); /* 未选中时下划线基础颜色：温润清晰的暖灰调，保证良好可视性 */
 
   /**
-   * 下划线悬停颜色（UnderlineEffects.jsx 会在 hover 时动态写入）
+   * 下划线悬停颜色（BaseLayout 脚本会在 hover 时动态写入）
    * 这里提供一个安全回退，避免未挂载脚本时 hover 无反馈。
    */
   --underline-hover-color: var(--accent-color);
@@ -114,12 +118,12 @@
  * @description 深色同样遵循「纸与墨」逻辑——暖调近黑纸面 + 米白墨字，强调色微提亮保证对比度
  */
 .dark {
-  --c-paper: 25 23 21; /* 暖调近黑底 */
-  --c-raised: 35 33 30; /* 浮起面：极浅米纹 */
-  --c-ink: 236 231 222; /* 主墨色（米白） */
-  --c-inksoft: 166 159 150; /* 次级墨：浅褐灰 */
-  --c-hairline: 59 56 53; /* 发丝边界线：暗褐灰 */
-  --c-vermilion: 196 87 63; /* 朱砂红提亮 */
+  --c-paper: #191715; /* 暖调近黑底 */
+  --c-raised: #23211e; /* 浮起面：极浅米纹 */
+  --c-ink: #ece7de; /* 主墨色（米白） */
+  --c-inksoft: #a69f96; /* 次级墨：浅褐灰 */
+  --c-hairline: #3b3835; /* 发丝边界线：暗褐灰 */
+  --c-vermilion: #c4573f; /* 朱砂红提亮 */
 
   /* 旧变量同步翻转 */
   --text-primary: #ece7de;
@@ -127,7 +131,7 @@
   --accent-color: #c4573f;
   --background-color: #191715;
   --border-color: #3b3835;
-  --underline-base-color: #3b3835;
+  --underline-base-color: rgba(236, 231, 222, 0.32); /* 暗色墨纸上清晰柔和的下划线底色 */
 }
 
 /**
@@ -156,7 +160,7 @@ body {
 .eyebrow {
   font-family: var(--font-family-display);
   font-style: italic;
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.18em;
   font-synthesis: none;
@@ -171,7 +175,7 @@ body {
 }
 
 .link-underline::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   bottom: -2px;
@@ -222,7 +226,6 @@ body {
   }
 }
 
-
 /**
  * @section 卡片遮罩层过渡效果
  */
@@ -250,12 +253,23 @@ body {
 
 /**
  * @section 自定义下划线效果
- * @description 使用 :is 提升特异性
+ * @description 使用 :is 提升特异性，同时支持 span 和 a 标签
  */
-:is(p span.underline, .rich-text span.underline, .underline) {
+:is(p span.underline, .rich-text span.underline, p a.underline, .rich-text a.underline, .underline) {
   position: relative !important;
   z-index: 0;
   text-decoration: none !important;
+  display: inline;
+}
+
+:is(p a.underline, .rich-text a.underline, a.underline) {
+  cursor: pointer;
+  color: inherit;
+  transition: color 0.2s ease;
+}
+
+:is(p a.underline, .rich-text a.underline, a.underline):hover {
+  color: var(--color-ink);
 }
 
 /**
@@ -272,13 +286,17 @@ body {
 
 /**
  * @section 下划线伪元素实现
+ * @description
+ * - 位于文字下方基线以下（bottom: -5px），彻底解决覆盖文字下沿笔画的问题
+ * - 线条厚度适中（height: 4px），未选中时呈现温润清晰的暖灰底色，具备良好可视性
+ * - pointer-events: none 确保不阻碍底层链接点击
  */
-:is(p span.underline, .rich-text span.underline, .underline)::after {
+:is(p span.underline, .rich-text span.underline, p a.underline, .rich-text a.underline, .underline)::after {
   content: "" !important;
   position: absolute !important;
   left: 0 !important;
-  bottom: -2px !important;
-  height: 0.35em !important;
+  bottom: -5px !important;
+  height: 4px !important;
   width: 100% !important;
   background-image: linear-gradient(90deg, var(--underline-base-color), var(--underline-base-color)) !important;
   background-size: 100% 100% !important;
@@ -286,16 +304,18 @@ body {
   z-index: -1 !important;
   border: none !important;
   outline: none !important;
+  border-radius: 2px !important;
+  pointer-events: none !important;
   transition: background-image 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 /**
  * @section 悬停时的随机强调色下划线效果
  * @description
- * - 颜色来源：UnderlineEffects.jsx 在 mouseenter 时写入 --underline-hover-color
+ * - 颜色来源：BaseLayout 脚本在 mouseenter 时写入 --underline-hover-color
  * - 回退：若脚本未运行，使用 --underline-hover-color 的默认值（--accent-color）
  */
-:is(p span.underline, .rich-text span.underline, .underline):hover::after {
+:is(p span.underline, .rich-text span.underline, p a.underline, .rich-text a.underline, .underline):hover::after {
   background-image: linear-gradient(
     90deg,
     var(--underline-hover-color, var(--accent-color)),

@@ -14,7 +14,7 @@
  */
 
 import { defineMiddleware } from 'astro:middleware';
-import { defaultLocale, isValidLocale } from './lib/i18n';
+import { defaultLocale, isValidLocale, resolveLocale } from './lib/i18n';
 
 /**
  * 从 URL 路径中提取语言代码
@@ -39,7 +39,8 @@ function extractLocaleFromPath(pathname: string): string | null {
  * 1. 静态资源直接放行
  * 2. 根路径直接放行（由 index.astro 处理）
  * 3. 验证语言路径有效性
- * 4. 无效语言路径重定向到默认语言
+ * 4. 非规范语言代码（如 en-us, zh-cn 等）重定向到规范语言路径
+ * 5. 无效语言路径重定向到默认语言
  *
  * @function onRequest
  * @param {Object} context - Astro 中间件上下文
@@ -50,6 +51,7 @@ function extractLocaleFromPath(pathname: string): string | null {
  *
  * @example
  * // 请求 /zh_CN/about -> 正常处理
+ * // 请求 /en-us/about -> 重定向到 /en_US/about/
  * // 请求 /about -> 重定向到 /zh_CN/about/
  * // 请求 /favicon.ico -> 直接放行
  */
@@ -86,7 +88,18 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return next();
   }
 
-  // 4. 无效语言路径，重定向到默认语言的对应页面
+  // 4. 如果路径以非规范语言代码（如 en-us, zh-cn, en, zh）开头，重定向到规范语言路径
+  if (pathLocale) {
+    const resolved = resolveLocale(pathLocale);
+    if (resolved) {
+      const restSegments = pathname.split('/').filter(Boolean).slice(1);
+      const restPath = restSegments.length > 0 ? restSegments.join('/') + '/' : '';
+      const newPath = `/${resolved}/${restPath}`;
+      return redirect(newPath, 301);
+    }
+  }
+
+  // 5. 无效语言路径，重定向到默认语言的对应页面
   // 例如：/about/ -> /zh_CN/about/
   const newPath = `/${defaultLocale}${pathname}`;
   return redirect(newPath, 302);

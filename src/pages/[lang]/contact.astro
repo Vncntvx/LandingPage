@@ -4,7 +4,7 @@
  * 联系页面
  *
  * 多语言联系页面，提供联系表单和联系信息。
- * 包含静态Hero区域和React交互式联系表单组件。
+ * 绝大部分内容静态直出，仅对核心提交表单引入细粒度交互岛屿。
  *
  * @page
  */
@@ -12,7 +12,9 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import Hero from '@components/ui/Hero.astro';
 import Footer from '@components/ui/Footer.astro';
 import HeaderBar from '@components/ui/HeaderBar.astro';
-import ContactPage from '@components/react/Contact.jsx';
+import ContactCards from '@components/ui/ContactCards.astro';
+import ContactServices from '@components/ui/ContactServices.astro';
+import ContactForm from '@components/react/ContactForm.jsx';
 import { getI18n, locales, type Locale } from '@lib/i18n';
 
 /**
@@ -52,8 +54,31 @@ const currentPath = Astro.url.pathname;
     description={contact.hero?.description}
   />
 
-  {/* Contact 组件包含表单交互，需要 React；延迟到空闲时水合以降低 TBT */}
-  <ContactPage client:idle content={{ contact }} />
+  {/* 邮箱通讯笺与社交链接列表 - 纯静态直出 */}
+  <ContactCards cards={contact.cards} actions={contact.actions} />
+
+  {/* 联系表单标题与信笺说明 */}
+  <section class='mb-12 sm:mb-16 md:mb-20'>
+    <div class='flex flex-wrap items-end justify-between gap-4 mb-8 sm:mb-10'>
+      <div>
+        <p class='eyebrow text-vermilion text-xs mb-2'>{contact.form.subtitle}</p>
+        <h2 class='text-3xl font-semibold display-font'>{contact.form.title}</h2>
+      </div>
+      <span class='text-sm text-inksoft rich-text' set:html={contact.form.note} />
+    </div>
+
+    {/* 细粒度表单交互岛屿 */}
+    <ContactForm
+      client:idle
+      formLabels={contact.formLabels}
+      formPlaceholders={contact.formPlaceholders}
+      formOptions={contact.formOptions}
+      formSubmit={contact.formSubmit}
+    />
+  </section>
+
+  {/* 服务折页目录 - 纯静态直出 */}
+  <ContactServices services={contact.services} />
 
   <Footer footer={footer} />
 </BaseLayout>

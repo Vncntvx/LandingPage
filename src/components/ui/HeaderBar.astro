@@ -9,8 +9,8 @@
  *
  * @component
  */
-import ThemeToggle from '@components/react/ThemeToggle.jsx';
-import LanguageSwitcher from '@components/react/LanguageSwitcher.jsx';
+import ThemeToggle from './ThemeToggle.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
 import { Image } from 'astro:assets';
 import { getLocalImage } from '@lib/localImages';
 
@@ -137,97 +137,83 @@ const navLinks = Array.isArray(nav) ? nav.filter(item => item?.href && !item.hid
 ---
 
 {/* 头部导航栏容器 */}
-<header
-  class='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-12 sm:mb-16 md:mb-20 animate-fade-in'
->
+<header class='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-12 sm:mb-16 md:mb-20 animate-fade-in'>
   {/* 左侧区域：用户头像和名称 */}
   <div class='flex items-center'>
-    {
-      localAvatar ? (
-        /* 优化后的本地头像图片：正方形画框（细边框留白，如小型画作） */
-        <Image
-          src={localAvatar}
-          alt={name}
-          width={56}
-          height={56}
-          widths={[56, 112]}
-          sizes='56px'
-          class='w-12 h-12 sm:w-14 sm:h-14 mr-3 sm:mr-4 object-cover border border-hairline p-[3px] bg-raised'
-          loading='eager'
-          decoding='sync'
-          fetchpriority='high'
-          format='webp'
-          quality={80}
-        />
-      ) : (
-        /* 备用头像图片：同样保持方形画框 */
-        <img
-          src={avatarRef}
-          alt={name}
-          width={56}
-          height={56}
-          class='w-12 h-12 sm:w-14 sm:h-14 mr-3 sm:mr-4 object-cover border border-hairline p-[3px] bg-raised'
-          loading='eager'
-          decoding='sync'
-          fetchpriority='high'
-        />
-      )
-    }
+    {localAvatar ? (
+      /* 优化后的本地头像图片：正方形画框（细边框留白，如小型画作） */
+      <Image
+        src={localAvatar}
+        alt={name}
+        width={56}
+        height={56}
+        widths={[56, 112]}
+        sizes='56px'
+        class='w-12 h-12 sm:w-14 sm:h-14 mr-3 sm:mr-4 object-cover border border-hairline p-[3px] bg-raised'
+        loading='eager'
+        decoding='sync'
+        fetchpriority='high'
+        format='webp'
+        quality={80}
+      />
+    ) : (
+      /* 备用头像图片：同样保持方形画框 */
+      <img
+        src={avatarRef}
+        alt={name}
+        width={56}
+        height={56}
+        class='w-12 h-12 sm:w-14 sm:h-14 mr-3 sm:mr-4 object-cover border border-hairline p-[3px] bg-raised'
+        loading='eager'
+        decoding='sync'
+        fetchpriority='high'
+      />
+    )}
     {/* 用户名称 */}
-    <span class='font-medium text-ink text-lg tracking-tight'>
-      {name}
-    </span>
+    <span class='font-medium text-ink text-lg tracking-tight'>{name}</span>
   </div>
 
   {/* 右侧区域：导航菜单和控制按钮 */}
   <div class='flex flex-wrap justify-center items-center gap-y-4 gap-x-4 sm:gap-8'>
     {/* 导航菜单 */}
-    <nav
-      class='flex flex-wrap items-center gap-3 sm:gap-8 text-base font-medium text-inksoft'
-    >
-      {
-        navLinks.map((link, index) => {
-          const resolvedHref = resolveHref(link.href);
-          const active = isActiveLink(link.href);
-          const isExternal = resolvedHref.startsWith('http') || resolvedHref.startsWith('mailto:');
+    <nav class='flex flex-wrap items-center gap-3 sm:gap-8 text-base font-medium text-inksoft'>
+      {navLinks.map((link, index) => {
+        const resolvedHref = resolveHref(link.href);
+        const active = isActiveLink(link.href);
+        const isExternal = resolvedHref.startsWith('http') || resolvedHref.startsWith('mailto:');
 
-          return (
-            <>
-              {/* 导航项分隔符：除第一项外显示 */}
-              {index > 0 && (
-                <span class='text-inksoft/50 select-none text-sm sm:text-base'>
-                  /
-                </span>
-              )}
-              {/* 导航链接 */}
-              <a
-                href={resolvedHref}
-                aria-current={active ? 'page' : undefined}
-                data-astro-prefetch={!isExternal ? 'hover' : undefined}
+        return (
+          <>
+            {/* 导航项分隔符：除第一项外显示 */}
+            {index > 0 && <span class='text-inksoft/50 select-none text-sm sm:text-base'>/</span>}
+            {/* 导航链接 */}
+            <a
+              href={resolvedHref}
+              aria-current={active ? 'page' : undefined}
+              data-astro-prefetch={!isExternal ? 'hover' : undefined}
+              class:list={[
+                'relative group transition-colors py-1',
+                active ? 'text-ink font-semibold' : 'hover:text-ink',
+              ]}
+            >
+              {link.label}
+              {/* 活动状态指示器：底部朱砂发丝线 */}
+              <span
                 class:list={[
-                  'relative group transition-colors py-1',
-                  active ? 'text-ink font-semibold' : 'hover:text-ink',
+                  'absolute bottom-0 left-0 h-px bg-vermilion transition-all duration-300 ease-out',
+                  active ? 'w-full' : 'w-0 group-hover:w-full',
                 ]}
-              >
-                {link.label}
-                {/* 活动状态指示器：底部朱砂发丝线 */}
-                <span
-                  class:list={[
-                    'absolute bottom-0 left-0 h-px bg-vermilion transition-all duration-300 ease-out',
-                    active ? 'w-full' : 'w-0 group-hover:w-full',
-                  ]}
-                />
-              </a>
-            </>
-          );
-        })
-      }
+              />
+            </a>
+          </>
+        );
+      })}
     </nav>
 
     {/* 控制按钮区域：主题切换和语言切换 */}
     <div class='flex items-center gap-2'>
-      <ThemeToggle client:idle />
-      <LanguageSwitcher client:idle currentLang={lang} />
+      <ThemeToggle />
+      <LanguageSwitcher currentLang={lang} currentPath={currentPath} />
     </div>
   </div>
 </header>

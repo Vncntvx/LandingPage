@@ -1,0 +1,140 @@
+---
+/**
+ * ContactCards.astro
+ * 联系信息卡片（邮箱信笺与社交链接列表）
+ * 纯 Astro 静态渲染，搭配原生 Clipboard API
+ */
+interface SocialItem {
+  label: string;
+  url: string;
+  icon: string;
+  handle: string;
+}
+
+interface Props {
+  cards: {
+    email: {
+      subtitle: string;
+      address: string;
+      note: string;
+    };
+    social: {
+      subtitle: string;
+      items: SocialItem[];
+    };
+  };
+  actions: {
+    writeEmail: string;
+    copy: string;
+    copied: string;
+    copyError?: string;
+  };
+}
+
+const { cards, actions } = Astro.props;
+const [emailUser, emailDomain] = cards.email.address.split('@');
+---
+
+<section class='mb-12 sm:mb-16 md:mb-20 grid md:grid-cols-[5fr_4fr] gap-10 lg:gap-16'>
+  <!-- 左：邮箱通讯笺 -->
+  <div class='border-t border-hairline pt-8'>
+    <div class='flex flex-wrap items-center gap-x-5 gap-y-2 min-h-[1.5rem] mb-6'>
+      <p class='eyebrow text-vermilion text-xs'>{cards.email.subtitle}</p>
+      <span class='inline-flex items-center font-mono uppercase tracking-[0.15em] text-xs font-semibold text-inksoft'>
+        <span class='w-1.5 h-1.5 rounded-full bg-vermilion mr-2 animate-pulse'></span>
+        Open to Connect
+      </span>
+    </div>
+
+    <div>
+      <h3 class='display-font text-2xl sm:text-3xl font-semibold break-all mb-4 text-ink'>
+        {emailUser}
+        <span class='text-inksoft/70'>@</span>
+        {emailDomain}
+      </h3>
+      <p class='text-inksoft text-sm leading-[1.85] tracking-[0.02em]'>{cards.email.note}</p>
+    </div>
+
+    <!-- 操作按钮：实体方框按钮，与表单提交按钮风格统一 -->
+    <div class='flex flex-wrap items-center gap-3 sm:gap-4 mt-8'>
+      <a
+        href={`mailto:${cards.email.address}`}
+        class='inline-flex items-center justify-center border border-ink text-ink hover:bg-ink hover:text-paper px-6 py-2.5 text-xs sm:text-sm tracking-[0.15em] transition-colors focus:outline-none whitespace-nowrap'
+      >
+        <span>{actions?.writeEmail || '写邮件'}</span>
+        <span class='ml-2' aria-hidden='true'>
+          &rarr;
+        </span>
+      </a>
+      <button
+        id='copy-email-button'
+        type='button'
+        data-email={cards.email.address}
+        data-copied={actions?.copied || '已复制'}
+        data-copy={actions?.copy || '复制'}
+        class='inline-flex items-center justify-center border border-ink text-ink hover:bg-ink hover:text-paper px-6 py-2.5 text-xs sm:text-sm tracking-[0.15em] transition-colors focus:outline-none min-w-[5.5rem] whitespace-nowrap'
+      >
+        <span id='copy-email-text'>{actions?.copy || '复制'}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 右：社交平台单列文字行 -->
+  <div class='border-t border-hairline pt-8'>
+    <div class='flex items-center min-h-[1.5rem] mb-6'>
+      <p class='eyebrow text-vermilion text-xs'>{cards.social.subtitle}</p>
+    </div>
+    <ul>
+      {cards.social.items.map(item => (
+        <li class='border-b border-hairline last:border-b-0'>
+          <a
+            href={item.url}
+            target='_blank'
+            rel='noopener noreferrer'
+            class='group flex items-center justify-between py-4 transition-colors'
+          >
+            <div>
+              <h4 class='font-medium text-ink group-hover:text-vermilion transition-colors'>
+                {item.label}
+              </h4>
+              {item.handle && <p class='font-mono text-xs text-inksoft mt-0.5'>{item.handle}</p>}
+            </div>
+            <span
+              aria-hidden='true'
+              class='text-lg leading-none text-inksoft group-hover:text-vermilion transition-colors'
+            >
+              ↗
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<script is:inline>
+  (function () {
+    var btn = document.getElementById('copy-email-button');
+    if (!btn || btn.dataset.bound) return;
+    btn.dataset.bound = 'true';
+    btn.addEventListener('click', async function () {
+      var email = btn.getAttribute('data-email');
+      var copiedText = btn.getAttribute('data-copied') || '已复制';
+      var defaultText = btn.getAttribute('data-copy') || '复制';
+      var textEl = document.getElementById('copy-email-text');
+      try {
+        await navigator.clipboard.writeText(email);
+        if (textEl) textEl.textContent = copiedText;
+        btn.classList.add('border-vermilion', 'text-vermilion');
+        btn.classList.remove('border-ink', 'text-ink');
+        setTimeout(function () {
+          if (textEl) textEl.textContent = defaultText;
+          btn.classList.remove('border-vermilion', 'text-vermilion');
+          btn.classList.add('border-ink', 'text-ink');
+        }, 2000);
+      } catch (e) {
+        console.warn('Copy failed:', e);
+      }
+    });
+  })();
+</script>

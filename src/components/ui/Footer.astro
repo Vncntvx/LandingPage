@@ -72,7 +72,7 @@ const getIconName = (kind: string) => {
 
 // 动态生成版权信息
 const currentYear = new Date().getFullYear();
-const startYear = 2024;
+const startYear = 2021;
 const copyrightText =
   footer.copyright
     ?.replace('{startYear}', startYear.toString())
@@ -86,98 +86,92 @@ const { icp, mps } = footer;
     {/* 主要内容行：版权信息和社交链接 */}
     <div class='flex justify-between items-center flex-col md:flex-row gap-4 md:gap-0'>
       <div class='flex flex-col items-center md:items-start gap-2'>
-        <p class='text-inksoft text-sm text-center md:text-left'>
-          {copyrightText}
-        </p>
+        <p class='text-inksoft text-sm text-center md:text-left'>{copyrightText}</p>
 
         {/* 备案信息 */}
-        {
-          (icp?.text || mps?.text) && (
-            <div class='flex flex-col sm:flex-row items-center justify-center md:justify-start gap-1 sm:gap-2 text-xs text-inksoft'>
-              {/* ICP备案 */}
-              {icp?.text && icp?.url && (
-                <a
-                  href={icp.url}
-                  target={icp.url.startsWith('http') ? '_blank' : undefined}
-                  rel={icp.url.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  class='inline-flex items-center whitespace-nowrap rounded-md -mx-2 px-2 py-2 min-h-[44px] sm:min-h-0 sm:mx-0 sm:px-0 sm:py-0 hover:text-ink transition-colors duration-200 focus:outline-none'
-                >
-                  {icp.text}
-                </a>
-              )}
+        {(icp?.text || mps?.text) && (
+          <div class='flex flex-col sm:flex-row items-center justify-center md:justify-start gap-1 sm:gap-2 text-xs text-inksoft'>
+            {/* ICP备案 */}
+            {icp?.text && icp?.url && (
+              <a
+                href={icp.url}
+                target={icp.url.startsWith('http') ? '_blank' : undefined}
+                rel={icp.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                class='inline-flex items-center whitespace-nowrap rounded-md -mx-2 px-2 py-2 min-h-[44px] sm:min-h-0 sm:mx-0 sm:px-0 sm:py-0 hover:text-ink transition-colors duration-200 focus:outline-none'
+              >
+                {icp.text}
+              </a>
+            )}
 
-              {/* 分隔符 - 仅在 sm 及以上屏幕显示 */}
-              {icp?.text && mps?.text && (
-                <span class='hidden sm:inline text-inksoft/50 select-none'>|</span>
-              )}
+            {/* 分隔符 - 仅在 sm 及以上屏幕显示 */}
+            {icp?.text && mps?.text && (
+              <span class='hidden sm:inline text-inksoft/50 select-none'>|</span>
+            )}
 
-              {/* 公安备案 */}
-              {mps?.text && mps?.url && (
-                <a
-                  href={mps.url}
-                  target={mps.url.startsWith('http') ? '_blank' : undefined}
-                  rel={mps.url.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  class='inline-flex items-center gap-1 whitespace-nowrap rounded-md -mx-2 px-2 py-2 min-h-[44px] sm:min-h-0 sm:mx-0 sm:px-0 sm:py-0 hover:text-ink transition-colors duration-200 focus:outline-none'
-                >
-                  {mps?.logo && (
-                    <img
-                      src={mps.logo}
-                      alt='公安备案'
-                      class='w-3 h-3 object-contain flex-shrink-0'
-                      loading='lazy'
-                      decoding='async'
-                    />
-                  )}
-                  <span>{mps.text}</span>
-                </a>
-              )}
-            </div>
-          )
-        }
+            {/* 公安备案 */}
+            {mps?.text && mps?.url && (
+              <a
+                href={mps.url}
+                target={mps.url.startsWith('http') ? '_blank' : undefined}
+                rel={mps.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                class='inline-flex items-center gap-1 whitespace-nowrap rounded-md -mx-2 px-2 py-2 min-h-[44px] sm:min-h-0 sm:mx-0 sm:px-0 sm:py-0 hover:text-ink transition-colors duration-200 focus:outline-none'
+              >
+                {mps?.logo && (
+                  <img
+                    src={mps.logo}
+                    alt='公安备案'
+                    class='w-3 h-3 object-contain flex-shrink-0'
+                    loading='lazy'
+                    decoding='async'
+                  />
+                )}
+                <span>{mps.text}</span>
+              </a>
+            )}
+          </div>
+        )}
       </div>
 
       {/* 社交链接 */}
       <div class='flex space-x-4 sm:space-x-6'>
-        {
-          socialLinks.map(link => (
-            <a
-              href={link.url}
-              class='text-inksoft hover:text-vermilion transition-colors social-icon'
-              title={link.title || ''}
-              aria-label={link.title || 'Social link'}
-              target={link.url?.startsWith('http') ? '_blank' : undefined}
-              rel={link.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
-            >
-              {link.imageUrl ? (
-                <img
-                  src={link.imageUrl}
-                  alt={link.title || 'social-icon'}
-                  class='w-full h-full object-contain'
-                  loading='lazy'
-                  decoding='async'
-                />
-              ) : (
-                (() => {
-                  const kind = getIconKind(link.icon, link.title);
+        {socialLinks.map(link => (
+          <a
+            href={link.url}
+            class='text-inksoft hover:text-vermilion transition-colors social-icon'
+            title={link.title || ''}
+            aria-label={link.title || 'Social link'}
+            target={link.url?.startsWith('http') ? '_blank' : undefined}
+            rel={link.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
+          >
+            {link.imageUrl ? (
+              <img
+                src={link.imageUrl}
+                alt={link.title || 'social-icon'}
+                class='w-full h-full object-contain'
+                loading='lazy'
+                decoding='async'
+              />
+            ) : (
+              (() => {
+                const kind = getIconKind(link.icon, link.title);
 
-                  return (
-                    <Icon
-                      name={getIconName(kind)}
-                      class='w-5 h-5'
-                      aria-hidden='true'
-                      focusable='false'
-                    />
-                  );
-                })()
-              )}
-            </a>
-          ))
-        }
+                return (
+                  <Icon
+                    name={getIconName(kind)}
+                    class='w-5 h-5'
+                    aria-hidden='true'
+                    focusable='false'
+                  />
+                );
+              })()
+            )}
+          </a>
+        ))}
       </div>
     </div>
 
     {/* 版权页彩蛋：出版物 colophon 微型题记 */}
-    <p class='mt-4 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-inksoft/70 select-none'>
+    <p class='mt-4 text-center font-mono text-xs uppercase tracking-[0.25em] text-inksoft select-none'>
       Edition 2026 · Set in EB Garamond &amp; Noto Serif SC
     </p>
   </div>

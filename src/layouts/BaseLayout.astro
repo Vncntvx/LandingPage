@@ -12,14 +12,19 @@ import '../styles/global.css';
 /* 展示衬线字体：@fontsource 自托管；中文思源宋按 unicode-range 分包，浏览器仅拉取用到的字块 */
 import '@fontsource/eb-garamond/400.css';
 import '@fontsource/eb-garamond/500.css';
+import '@fontsource/eb-garamond/600.css';
+import '@fontsource/eb-garamond/700.css';
 import '@fontsource/eb-garamond/400-italic.css';
 import '@fontsource/eb-garamond/500-italic.css';
+import '@fontsource/eb-garamond/600-italic.css';
+import '@fontsource/eb-garamond/700-italic.css';
 import '@fontsource/noto-serif-sc/chinese-simplified-400.css';
+import '@fontsource/noto-serif-sc/chinese-simplified-600.css';
+import '@fontsource/noto-serif-sc/chinese-simplified-700.css';
 import { SEO } from 'astro-seo';
 import { getImage } from 'astro:assets';
 import { getLocalImage } from '@lib/localImages';
 import { getHrefLang, type Locale } from '@lib/i18n';
-import UnderlineEffects from '@components/react/UnderlineEffects.jsx';
 
 /**
  * 组件属性接口
@@ -135,7 +140,7 @@ const fullCanonicalUrl = canonicalUrl || Astro.url.href;
 const gaId = import.meta.env.PUBLIC_GA_ID;
 ---
 
-<!-- HTML文档根元素 --><!doctype html>
+<!doctype html>
 <html lang={htmlLang}>
   <head>
     <!-- 基础元标签 -->
@@ -217,7 +222,8 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
         }
         applyTheme();
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
-          if (!localStorage.getItem('theme')) document.documentElement.classList.toggle('dark', e.matches);
+          if (!localStorage.getItem('theme'))
+            document.documentElement.classList.toggle('dark', e.matches);
         });
         document.addEventListener('click', function (e) {
           var a = e.target.closest('a[href^="#"]');
@@ -228,35 +234,71 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
           if (!el) return;
           e.preventDefault();
           el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          try { history.pushState(null, '', '#' + id); } catch {}
+          try {
+            history.pushState(null, '', '#' + id);
+          } catch {}
         });
       })();
     </script>
-
     <!-- Google Analytics：条件渲染 -->
-    {
-      gaId && (
-        <>
-          <script is:inline define:vars={{ gaId }}>
-            window.dataLayer = window.dataLayer || []; dataLayer.push(['js', new Date()]);
-            dataLayer.push(['config', gaId]);
-          </script>
-          <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
-        </>
-      )
-    }
+    {gaId && (
+      <>
+        <script is:inline define:vars={{ gaId }}>
+          window.dataLayer = window.dataLayer || [];
+          dataLayer.push(['js', new Date()]);
+          dataLayer.push(['config', gaId]);
+        </script>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+      </>
+    )}
   </head>
 
   <!-- 页面主体 -->
   <body class='min-h-screen bg-paper text-ink transition-colors duration-300'>
-    <main
-      class='container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-12 sm:py-16 max-w-8xl'
-    >
+    <main class='container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-12 sm:py-16 max-w-8xl'>
       <!-- 插槽：插入页面内容 -->
       <slot />
     </main>
 
-    <!-- 交互增强：为 .underline 元素提供悬停随机变色（不渲染 DOM） -->
-    <UnderlineEffects client:idle />
+    <!-- 交互增强：原生下划线悬停随机强调色动效，零 JS 框架依赖 -->
+    <script is:inline>
+      (function () {
+        var accentColors = [
+          '#10b981',
+          '#3b82f6',
+          '#f97316',
+          '#8b5cf6',
+          '#ec4899',
+          '#06b6d4',
+          '#eab308',
+          '#ef4444',
+        ];
+        function getRandomColor() {
+          return accentColors[Math.floor(Math.random() * accentColors.length)];
+        }
+        function bind(el) {
+          if (!el || el.dataset.underlineBound) return;
+          el.dataset.underlineBound = 'true';
+          el.addEventListener('mouseenter', function () {
+            el.style.setProperty('--underline-hover-color', getRandomColor());
+          });
+          el.addEventListener('mouseleave', function () {
+            el.style.setProperty('--underline-hover-color', 'transparent');
+          });
+        }
+        document.querySelectorAll('.underline').forEach(bind);
+        if ('MutationObserver' in window) {
+          new MutationObserver(function (mutations) {
+            mutations.forEach(function (m) {
+              m.addedNodes.forEach(function (node) {
+                if (node.nodeType !== 1) return;
+                if (node.matches && node.matches('.underline')) bind(node);
+                if (node.querySelectorAll) node.querySelectorAll('.underline').forEach(bind);
+              });
+            });
+          }).observe(document.body, { childList: true, subtree: true });
+        }
+      })();
+    </script>
   </body>
 </html>

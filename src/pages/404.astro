@@ -3,103 +3,76 @@
  * /404.astro 根级 404 页面
  *
  * 网站根级别的404错误页面，当用户访问不存在的页面时显示。
- * 使用默认语言（中文）提供友好的错误提示和导航选项。
+ * 遵循纸墨设计系统（Paper & Ink），提供统一的视觉与导航。
  *
  * @page
  */
 import BaseLayout from '@layouts/BaseLayout.astro';
-import { getI18n, defaultLocale, type Locale } from '@lib/i18n';
+import { defaultLocale, type Locale } from '@lib/i18n';
 
 // 404页面使用默认语言
 const lang: Locale = defaultLocale;
-await getI18n(lang);
 
 // 404页面文本内容
 const t = {
-  /** 页面标题 */
   title: '404 - 页面未找到',
-  /** 页面描述 */
   description: '抱歉，您访问的页面不存在',
-  /** 主标题 */
-  heading: '页面好像走丢了',
-  /** 提示信息 */
-  message: '链接或许已更新，但好消息是，灵感仍在。试试看以下操作：',
-  /** 返回首页按钮文本 */
+  heading: '页面走失在字里行间',
+  message: '链接或许已更新或被归档。若要继续探索，请选择以下操作：',
   homeButton: '返回首页',
-  /** 联系按钮文本 */
   contactButton: '联系 Wenjie',
-  /** 项目区块标题 */
-  projectsTitle: '最近项目',
-  /** 项目区块链接前缀 */
+  projectsTitle: '探索发现',
   projectsText: '浏览',
-  /** 项目区块链接文本 */
   projectsLink: '关于页',
-  /** 项目区块链接后缀 */
-  projectsEnd: '了解正在进行的实验与作品',
-  /** 联系区块标题 */
-  contactTitle: '联系合作',
-  /** 联系区块链接前缀 */
-  contactText: '想和我聊聊？点此',
-  /** 联系区块链接文本 */
-  contactLink: '发送邮件',
-  /** 联系区块链接后缀 */
-  contactEnd: '，我随时准备提供帮助',
+  projectsEnd: '，了解正在进行的课题、作品与思考',
+  contactTitle: '建立联系',
+  contactText: '有任何想法或建议？随时点此',
+  contactLink: '写邮件',
+  contactEnd: '与我交流',
 };
 ---
 
 <BaseLayout title={t.title} description={t.description} lang={lang}>
-  {/* 404页面内容容器 */}
-  <div class='min-h-[70vh] flex items-center justify-center py-20'>
-    {/* 内容区域 */}
-    <div class='max-w-3xl mx-auto px-6 text-center'>
-      {/* 404错误代码 */}
-      <p class='text-xs uppercase tracking-[0.6em] text-red-600 font-semibold mb-6'>404</p>
+  <div class='min-h-[70vh] flex items-center justify-center py-16 sm:py-24'>
+    <div class='max-w-2xl mx-auto px-6 text-center'>
+      {/* 404 错误标识：使用朱砂红单字距修饰 */}
+      <p class='font-mono text-xs uppercase tracking-[0.4em] text-vermilion mb-4'>Error 404</p>
 
       {/* 主标题 */}
-      <h1 class='display-font text-5xl sm:text-6xl font-bold mb-6'>{t.heading}</h1>
+      <h1 class='display-font text-4xl sm:text-5xl font-semibold text-ink mb-6'>{t.heading}</h1>
 
       {/* 描述信息 */}
-      <p class='text-lg text-gray-600 dark:text-gray-400 mb-10'>
-        {t.message}
-      </p>
+      <p class='text-inksoft text-base sm:text-lg leading-relaxed mb-10'>{t.message}</p>
 
       {/* 操作按钮区域 */}
-      <div class='flex flex-col sm:flex-row sm:justify-center gap-4 mb-12'>
-        {/* 返回首页按钮：添加viewport预取支持 */}
+      <div class='flex flex-col sm:flex-row sm:justify-center gap-4 mb-16'>
         <a
           href={`/${lang}/`}
-          data-astro-prefetch='viewport'
-          class='px-6 py-3 bg-black dark:bg-white text-white dark:text-black rounded-full font-semibold card-hover transition-colors'
+          data-astro-prefetch='hover'
+          class='inline-flex items-center justify-center border border-ink text-ink hover:bg-ink hover:text-paper px-8 py-3 text-sm tracking-[0.15em] transition-colors'
         >
           {t.homeButton}
         </a>
 
-        {/* 联系按钮：添加viewport预取支持 */}
         <a
           href={`/${lang}/contact/`}
-          data-astro-prefetch='viewport'
-          class='px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-full font-semibold card-hover hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-gray-900 dark:text-gray-100'
+          data-astro-prefetch='hover'
+          class='inline-flex items-center justify-center border border-hairline text-ink hover:border-ink px-8 py-3 text-sm tracking-[0.15em] transition-colors'
         >
           {t.contactButton}
         </a>
       </div>
 
-      {/* 建议操作区域 */}
-      <div class='grid sm:grid-cols-2 gap-6 text-left'>
-        {/* 项目建议卡片 */}
-        <article
-          class='p-6 border border-gray-200 dark:border-gray-700 rounded-3xl card-hover bg-white dark:bg-gray-800'
-        >
-          <h3 class='text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100'>
-            {t.projectsTitle}
-          </h3>
-          <p class='text-gray-600 dark:text-gray-400 text-sm'>
+      {/* 建议导航卡片 */}
+      <div class='grid sm:grid-cols-2 gap-6 text-left border-t border-hairline pt-10'>
+        <article class='border-t border-hairline pt-4 sm:border-t-0 sm:pt-0'>
+          <h2 class='display-font text-lg font-semibold text-ink mb-2'>{t.projectsTitle}</h2>
+          <p class='text-inksoft text-sm leading-relaxed'>
             {t.projectsText}
-            {/* 关于页面链接：添加hover预取支持 */}
             <a
               href={`/${lang}/about/`}
               data-astro-prefetch='hover'
-              class='underline ml-1 hover:text-black dark:hover:text-white'
+              class='link-underline text-vermilion hover:text-ink font-medium mx-1'
             >
               {t.projectsLink}
             </a>
@@ -107,19 +80,14 @@ const t = {
           </p>
         </article>
 
-        {/* 联系建议卡片 */}
-        <article
-          class='p-6 border border-gray-200 dark:border-gray-700 rounded-3xl card-hover bg-white dark:bg-gray-800'
-        >
-          <h3 class='text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100'>
-            {t.contactTitle}
-          </h3>
-          <p class='text-gray-600 dark:text-gray-400 text-sm'>
+        <article class='border-t border-hairline pt-4 sm:border-t-0 sm:pt-0'>
+          <h2 class='display-font text-lg font-semibold text-ink mb-2'>{t.contactTitle}</h2>
+          <p class='text-inksoft text-sm leading-relaxed'>
             {t.contactText}
-            {/* 邮件链接 */}
             <a
-              class='underline ml-1 hover:text-black dark:hover:text-white'
-              href='mailto:wenjie.xu.cn@outlook.com'
+              href={`/${lang}/contact/`}
+              data-astro-prefetch='hover'
+              class='link-underline text-vermilion hover:text-ink font-medium mx-1'
             >
               {t.contactLink}
             </a>

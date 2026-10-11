@@ -1,0 +1,38 @@
+---
+/**
+ * LanguageSwitcher.astro
+ * 原生语言切换链接组件（零客户端 JS）
+ *
+ * 在静态站点中直接生成指向目标语言对应页面的超链接，
+ * 支持 hover 预获取，对搜索引擎爬虫友好且无需 React 水合。
+ */
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { localeConfig, type Locale } from '@lib/i18n';
+
+interface Props {
+  currentLang?: string;
+  currentPath?: string;
+}
+
+const { currentLang = 'zh_CN', currentPath } = Astro.props;
+const safeLang: Locale = currentLang === 'en_US' ? 'en_US' : 'zh_CN';
+const nextLang: Locale = safeLang === 'zh_CN' ? 'en_US' : 'zh_CN';
+
+const pathname = currentPath || Astro.url.pathname;
+const cleanPath = pathname.replace(/^\/(zh_CN|en_US)(\/|$)/, '').replace(/^\//, '');
+const normalizedPath = cleanPath ? (cleanPath.endsWith('/') ? cleanPath : `${cleanPath}/`) : '';
+const targetUrl = getRelativeLocaleUrl(nextLang, normalizedPath, { normalizeLocale: false });
+
+const currentLabel = localeConfig[safeLang]?.label || (safeLang === 'zh_CN' ? '中' : 'EN');
+const nextLabel = localeConfig[nextLang]?.label || (nextLang === 'zh_CN' ? '中' : 'EN');
+---
+
+<a
+  href={targetUrl}
+  data-astro-prefetch='hover'
+  class='relative link-underline ml-2 px-0.5 py-1 font-display italic text-sm tracking-[0.15em] text-inksoft hover:text-ink transition-colors focus:outline-none'
+  aria-label={`当前语言: ${currentLabel}, 切换到: ${nextLabel}`}
+  title={`切换到 ${nextLabel}`}
+>
+  {nextLabel}
+</a>

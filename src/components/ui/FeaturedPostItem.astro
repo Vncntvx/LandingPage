@@ -130,9 +130,7 @@ const isValidHref = typeof href === 'string' && href.trim() !== '' && href !== '
     <!-- 底部信息区域：描述、分类和日期 -->
     <div class='mt-auto'>
       <!-- 文章描述：悬停时淡入，不做位移 -->
-      <p
-        class='text-white text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 website-description-text line-clamp-3 mb-4'
-      >
+      <p class='text-white text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 website-description-text line-clamp-3 mb-4'>
         {item.description}
       </p>
 
@@ -140,23 +138,25 @@ const isValidHref = typeof href === 'string' && href.trim() !== '' && href !== '
       <div class='flex items-end justify-between gap-2'>
         <!-- 分类标签列表 -->
         <div class='flex flex-wrap gap-1.5'>
-          {
-            categories.map((cat, index) => (
-              <span
-                class:list={[
-                  'inline-block text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5',
-                  index === 0 ? 'bg-paper text-ink' : 'bg-white/15 text-white',
-                ]}
-              >
-                {cat}
-              </span>
-            ))
-          }
+          {categories.map((cat, index) => (
+            <span
+              class:list={[
+                'inline-block text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5',
+                index === 0 ? 'bg-white text-neutral-900 font-medium' : 'bg-white/20 text-white',
+              ]}
+            >
+              {cat}
+            </span>
+          ))}
         </div>
 
         <!-- 元数据：RSS标识和发布日期 -->
         <div class='flex flex-col items-end shrink-0'>
-          {isRSS && <span class='text-[10px] font-mono uppercase tracking-wider text-white/60 mb-0.5'>RSS</span>}
+          {isRSS && (
+            <span class='text-[10px] font-mono uppercase tracking-wider text-white/60 mb-0.5'>
+              RSS
+            </span>
+          )}
           {formattedDate && <p class='text-white text-xs opacity-80'>{formattedDate}</p>}
         </div>
       </div>

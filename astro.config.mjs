@@ -1,20 +1,18 @@
 /**
  * @fileoverview Astro 框架配置文件
  * @module astro.config
- * @version 1.0.0
+ * @version 2.0.0
  * @author LandingPage Team
  * @since 1.0.0
- * @description 本文件定义了 Astro 项目的核心配置，包括站点信息、构建选项、集成插件和优化设置。
- * Astro 是一个现代化的静态站点生成器，支持多种前端框架和内容格式。
+ * @description 本文件定义了 Astro 项目的核心配置，基于 Astro 7.3 与 Tailwind CSS 4 Vite 原生集成。
  *
  * @see https://astro.build/config
  * @license MIT
- * @copyright 2023 LandingPage Team
  */
 
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
-import tailwind from '@astrojs/tailwind';
+import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
 import robotsTxt from 'astro-robots-txt';
@@ -30,9 +28,12 @@ export default defineConfig({
   /** 构建输出模式：'static' 静态站点生成，'server' 服务器端渲染，'hybrid' 混合模式 */
   output: 'static',
 
+  /** 预渲染路由冲突处理策略 */
+  prerenderConflictBehavior: 'ignore',
+
   /** 构建优化配置 */
   build: {
-    /** 内联样式表策略：'auto' 自动判断（字体分包 CSS 较大，走外链避免整段内联进每个页面） */
+    /** 内联样式表策略：'auto' 自动判断 */
     inlineStylesheets: 'auto',
   },
 
@@ -49,20 +50,8 @@ export default defineConfig({
       optimize: true,
     }),
 
-    /** Tailwind CSS 集成：提供实用优先的 CSS 框架支持 */
-    tailwind({
-      /** 指定 Tailwind 配置文件路径 */
-      configFile: './tailwind.config.mjs',
-    }),
-
     /** 图标集成：基于 Iconify 的图标系统支持 */
-    icon({
-      /** 可选配置：指定要包含的图标集，减少打包体积 */
-      // include: {
-      //   mdi: ['*'],        // Material Design Icons
-      //   lucide: ['*'],     // Lucide Icons
-      // },
-    }),
+    icon(),
 
     /** 站点地图集成：自动生成 sitemap.xml 文件供搜索引擎使用 */
     sitemap({
@@ -76,11 +65,11 @@ export default defineConfig({
           en_US: 'en-US',
         },
       },
-      /** 内容更新频率：'always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly', 'never' */
+      /** 内容更新频率 */
       changefreq: 'weekly',
-      /** 页面优先级：0.0-1.0，数值越高优先级越高 */
+      /** 页面优先级 */
       priority: 0.7,
-      /** 最后修改时间：用于搜索引擎判断内容新鲜度 */
+      /** 最后修改时间 */
       lastmod: new Date(),
     }),
 
@@ -113,7 +102,7 @@ export default defineConfig({
       /** 是否为默认语言添加 URL 前缀 */
       prefixDefaultLocale: true,
       /** 是否自动重定向到默认语言 */
-      redirectToDefaultLocale: false,
+      redirectToDefaultLocale: true,
     },
   },
 
@@ -125,11 +114,12 @@ export default defineConfig({
     prefetchAll: false,
   },
 
-  /** Vite 构建工具配置 */
+  /** Vite 构建工具配置：集成 Tailwind CSS 4 Vite 原生插件 */
   vite: {
+    plugins: [tailwindcss()],
     /** 依赖优化配置 */
     optimizeDeps: {
-      /** 预构建依赖列表，提高开发服务器启动速度 */
+      /** 预构建依赖列表 */
       include: ['react', 'react-dom'],
     },
     /** 模块解析配置 */
@@ -142,18 +132,26 @@ export default defineConfig({
   /** 图片优化配置：定义图片处理和显示策略 */
   image: {
     /** 允许优化的外部图片域名白名单 */
-    domains: ['images.unsplash.com', 'unsplash.com', 'picsum.photos', 'blog.wenjiexu.site'],
+    domains: [
+      'images.unsplash.com',
+      'unsplash.com',
+      'picsum.photos',
+      'fastly.picsum.photos',
+      'blog.wenjiexu.site',
+    ],
     /** 远程图片匹配模式：更灵活的域名和路径匹配 */
     remotePatterns: [
       {
-        /** 协议类型 */
         protocol: 'https',
-        /** 域名模式：支持通配符 */
         hostname: '**.unsplash.com',
       },
       {
         protocol: 'https',
         hostname: 'picsum.photos',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.picsum.photos',
       },
       {
         protocol: 'https',

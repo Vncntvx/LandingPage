@@ -32,7 +32,7 @@
     "hero": {
         "subtitle": "WENJIE XU",
         "title": "<span class=\"inline-block\">Stay Curious</span> <span class=\"inline-block\">Stay Grounded</span>",
-        "description": "Interdisciplinary collaboration always unveils new horizons.<br>If you'd like to <a href=\"mailto:wenjie.xu.cn@outlook.com\" class=\"underline\">connect</a>, I'm always open to the dialogue."
+        "description": "Interdisciplinary collaboration always unveils new horizons.<br>If you'd like to <a href=\"/en_US/contact/\" class=\"underline\">connect</a>, I'm always open to the dialogue."
     },
     "websites": {
         "title": "Websites",
@@ -239,7 +239,7 @@
         "form": {
             "subtitle": "PROJECT INTAKE",
             "title": "Write Down Your Ideas",
-            "note": "Average response time: <strong class=\"text-gray-700\">12h</strong>"
+            "note": "Average response time: <strong class=\"text-ink\">12h</strong>"
         },
         "actions": {
             "writeEmail": "Write Email",
@@ -273,18 +273,18 @@
             "items": [
                 {
                     "subtitle": "Data",
-                    "title": "Data Insights",
-                    "description": "Mining and visualization of multi-source heterogeneous data."
+                    "title": "Observing Reality",
+                    "description": "Capturing traces of reality, observing the pulse of the world."
                 },
                 {
                     "subtitle": "Research",
-                    "title": "Risk Modeling",
-                    "description": "Risk assessment and simulation of complex systems."
+                    "title": "Inquiring Mechanisms",
+                    "description": "Tracing underlying principles, exploring complex systems."
                 },
                 {
                     "subtitle": "Analysis",
-                    "title": "Decision Support",
-                    "description": "Strategic planning and coping strategies under uncertainty."
+                    "title": "Discerning Insights",
+                    "description": "Navigating through uncertainties, illuminating rational decisions."
                 }
             ]
         }

@@ -99,3 +99,8 @@ export function getLocalImage(fileNameOrPath: string): ImageMetadata | undefined
   const base = getBaseName(fileNameOrPath);
   return imageByFileName.get(base);
 }
+
+/**
+ * 兼容旧命名的网站图片查询别名
+ */
+export const getWebsiteImage = getLocalImage;

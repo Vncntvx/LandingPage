@@ -28,31 +28,21 @@ const { subtitle, title, description } = Astro.props;
 {/* Hero区块容器 */}
 <section class='mb-12 sm:mb-16 md:mb-20'>
   {/* 副标题：条件渲染 */}
-  {
-    subtitle && (
-      <h1 class='eyebrow text-vermilion text-sm mb-4 sm:mb-6'>
-        {subtitle}
-      </h1>
-    )
-  }
+  {subtitle && <p class='eyebrow text-vermilion text-sm mb-4 sm:mb-6'>{subtitle}</p>}
 
-  {/* 主标题：条件渲染，支持HTML内容 */}
-  {
-    title && (
-      <h2
-        class='text-[length:clamp(2.75rem,8vw,5.25rem)] font-normal mb-8 sm:mb-10 leading-[1.15] display-font tracking-[0.01em] rich-text'
-        set:html={title}
-      />
-    )
-  }
+  {/* 主标题：核心页面大标题，使用标准 h1 标签 */}
+  {title && (
+    <h1
+      class='text-[length:clamp(2.75rem,8vw,5.25rem)] font-normal mb-8 sm:mb-10 leading-[1.15] display-font tracking-[0.01em] rich-text'
+      set:html={title}
+    />
+  )}
 
   {/* 描述文本：条件渲染，支持HTML内容 */}
-  {
-    description && (
-      <p
-        class='text-xl sm:text-2xl mb-6 sm:mb-8 text-inksoft max-w-3xl leading-[1.85] tracking-[0.02em] rich-text'
-        set:html={description}
-      />
-    )
-  }
+  {description && (
+    <p
+      class='text-xl sm:text-2xl mb-6 sm:mb-8 text-inksoft max-w-3xl leading-[1.85] tracking-[0.02em] rich-text'
+      set:html={description}
+    />
+  )}
 </section>

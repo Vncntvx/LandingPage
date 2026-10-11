@@ -53,71 +53,59 @@ const currentPath = Astro.url.pathname;
   <section class='mb-12 sm:mb-16 md:mb-20'>
     <div class='flex items-end justify-between mb-8 sm:mb-10'>
       <div>
-        <p class='eyebrow text-vermilion text-sm mb-2'>
-          {timeline.subtitle}
-        </p>
-        <h3 class='text-3xl font-normal display-font'>{timeline.title}</h3>
+        <p class='eyebrow text-vermilion text-sm mb-2'>{timeline.subtitle}</p>
+        <h3 class='text-3xl font-semibold display-font'>{timeline.title}</h3>
       </div>
       <span class='hidden sm:inline-block font-display italic text-sm tracking-[0.15em] text-inksoft'>
         {timeline.period}
       </span>
     </div>
     <div>
-      {
-        timeline.items.map((item: { period: string; title: string; description: string }) => (
-          /* 每条研究上方仅一根发丝线，序号左置、内容右展，无卡片框 */
-          <article class='grid grid-cols-[4rem_1fr] sm:grid-cols-[6.5rem_1fr] gap-x-5 sm:gap-x-10 border-t border-hairline pt-6 sm:pt-8 pb-2'>
-            <p class='font-display italic text-vermilion text-sm sm:text-base pt-1 whitespace-nowrap'>
-              No. {item.period}
+      {timeline.items.map((item: { period: string; title: string; description: string }) => (
+        /* 每条研究上方仅一根发丝线，序号左置、内容右展，无卡片框 */
+        <article class='grid grid-cols-[4rem_1fr] sm:grid-cols-[6.5rem_1fr] gap-x-5 sm:gap-x-10 border-t border-hairline pt-6 sm:pt-8 pb-2'>
+          <p class='font-display italic text-vermilion text-sm sm:text-base pt-1 whitespace-nowrap'>
+            No. {item.period}
+          </p>
+          <div>
+            <h4 class='text-xl sm:text-2xl font-semibold display-font mb-3'>{item.title}</h4>
+            <p class='text-inksoft leading-[1.85] tracking-[0.02em] max-w-3xl'>
+              {item.description}
             </p>
-            <div>
-              <h4 class='text-xl sm:text-2xl font-normal display-font mb-3'>{item.title}</h4>
-              <p class='text-inksoft leading-[1.85] tracking-[0.02em] max-w-3xl'>
-                {item.description}
-              </p>
-            </div>
-          </article>
-        ))
-      }
+          </div>
+        </article>
+      ))}
     </div>
   </section>
 
   {/* Values 区块：双栏不对称排版（左栏纵向文学列表 + 右栏边注） */}
   <section class='mb-12 sm:mb-16 md:mb-20'>
     <div class='grid md:grid-cols-[3fr_2fr] gap-10 lg:gap-16'>
-      <div class='text-center md:text-left'>
-        <p class='eyebrow text-vermilion text-sm mb-3'>
-          {values.subtitle}
-        </p>
-        <h3 class='text-3xl font-normal display-font mb-6 sm:mb-8'>{values.title}</h3>
+      <div>
+        <p class='eyebrow text-vermilion text-sm mb-3'>{values.subtitle}</p>
+        <h3 class='text-3xl font-semibold display-font mb-6 sm:mb-8'>{values.title}</h3>
         <ul class='space-y-6 text-inksoft leading-[1.85] tracking-[0.02em]'>
-          {
-            values.items.map((item: { label: string; text: string }) => (
-              <li class='flex flex-col items-center md:block'>
-                <span class='display-font text-xl text-ink md:mr-2 mb-1 md:mb-0 inline-block'>
-                  {item.label}：
-                </span>
-                <span>{item.text}</span>
-              </li>
-            ))
-          }
+          {values.items.map((item: { label: string; text: string }) => (
+            <li>
+              <span class='display-font text-xl text-ink mr-2 inline-block'>{item.label}：</span>
+              <span>{item.text}</span>
+            </li>
+          ))}
         </ul>
       </div>
       {/* 右栏 Marginalia：单侧发丝竖线包裹的边注专栏 */}
       <aside class='border-l border-hairline pl-8 sm:pl-10 py-2'>
-        <p class='eyebrow text-vermilion text-xs mb-4'>
-          {values.product.subtitle}
-        </p>
-        <h4 class='text-xl sm:text-2xl font-normal display-font mb-3'>{values.product.title}</h4>
+        <p class='eyebrow text-vermilion text-xs mb-4'>{values.product.subtitle}</p>
+        <h4 class='text-xl sm:text-2xl font-semibold display-font mb-3'>{values.product.title}</h4>
         <p class='text-inksoft leading-[1.85] tracking-[0.02em]'>{values.product.description}</p>
         <a
           href={resolveContentHref(values.product.linkUrl, lang)}
-          class='link-underline group/link inline-flex items-baseline gap-2 mt-6 text-ink hover:text-vermilion transition-colors'
+          class='link-underline group/link inline-flex items-center gap-1.5 mt-6 text-sm font-medium text-vermilion hover:text-ink transition-colors'
         >
-          <span class='text-inksoft' aria-hidden='true'>[</span>
           <span>{values.product.linkText}</span>
-          <span aria-hidden='true'>&rarr;</span>
-          <span class='text-inksoft' aria-hidden='true'>]</span>
+          <span aria-hidden='true' class='transition-transform group-hover/link:translate-x-0.5'>
+            &rarr;
+          </span>
         </a>
       </aside>
     </div>
@@ -126,10 +114,8 @@ const currentPath = Astro.url.pathname;
   {/* Philosophy 区块：书籍扉页题词（Epigraph） */}
   <section class='mb-12 sm:mb-16 md:mb-20'>
     <div class='border-y border-hairline py-20 sm:py-28 px-6 text-center'>
-      <p class='eyebrow text-inksoft text-sm mb-8 sm:mb-10'>
-        {philosophy.subtitle}
-      </p>
-      <h3 class='display-font text-3xl sm:text-5xl font-normal tracking-[0.05em] mb-8 sm:mb-10'>
+      <p class='eyebrow text-vermilion text-sm mb-8 sm:mb-10'>{philosophy.subtitle}</p>
+      <h3 class='display-font text-3xl sm:text-5xl font-semibold tracking-[0.05em] mb-8 sm:mb-10'>
         {philosophy.title}
       </h3>
       <p class='text-base sm:text-lg text-inksoft leading-[1.85] tracking-[0.02em] max-w-2xl mx-auto mb-10 sm:mb-12'>
@@ -137,12 +123,12 @@ const currentPath = Astro.url.pathname;
       </p>
       <a
         href={resolveContentHref(philosophy.ctaUrl, lang)}
-        class='link-underline inline-flex items-baseline gap-2 text-lg text-ink hover:text-vermilion transition-colors'
+        class='inline-flex items-center justify-center border border-ink text-ink hover:bg-ink hover:text-paper px-8 py-3 text-sm tracking-[0.15em] transition-colors focus:outline-none'
       >
-        <span class='text-inksoft' aria-hidden='true'>[</span>
         <span>{philosophy.ctaText}</span>
-        <span aria-hidden='true'>&nearr;</span>
-        <span class='text-inksoft' aria-hidden='true'>]</span>
+        <span class='ml-2' aria-hidden='true'>
+          &rarr;
+        </span>
       </a>
     </div>
   </section>

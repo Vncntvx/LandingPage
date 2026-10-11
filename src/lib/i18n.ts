@@ -9,7 +9,7 @@
  * @since 1.0.0
  */
 
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import type { I18nSchema } from '../content.config';
 import type { CollectionEntry } from 'astro:content';
 
@@ -77,20 +77,19 @@ export async function getI18n(locale: Locale): Promise<I18nSchema> {
   // 将语言代码转换为小写形式以满足内容集合的 ID 兼容性需求
   const contentId = locale.toLowerCase();
 
-  // 获取 i18n 内容集合
-  const collection = await getCollection('i18n');
-  const entry = collection.find((e: CollectionEntry<'i18n'>) => e.id === contentId);
+  // 直接使用 getEntry 获取指定条目
+  const entry = await getEntry('i18n', contentId);
 
   if (!entry) {
     // 如果指定语言的 i18n 数据不存在，则使用默认语言作为回退
     const defaultContentId = defaultLocale.toLowerCase();
-    const fallback = collection.find((e: { id: string }) => e.id === defaultContentId);
+    const fallback = await getEntry('i18n', defaultContentId);
     if (!fallback) {
       throw new Error(`Missing i18n data for ${locale}`);
     }
-    return fallback.data;
+    return fallback.data as I18nSchema;
   }
-  return entry.data;
+  return entry.data as I18nSchema;
 }
 
 /**
@@ -132,6 +131,38 @@ export async function getAllI18n(): Promise<Record<string, I18nSchema>> {
  */
 export function isValidLocale(locale: string): locale is Locale {
   return locales.includes(locale as Locale);
+}
+
+/**
+ * 语言别名映射表
+ * 支持常见别名、大小写和中划线格式到规范 Locale 的映射
+ */
+const localeAliasMap: Record<string, Locale> = {
+  zh: 'zh_CN',
+  'zh-cn': 'zh_CN',
+  zh_cn: 'zh_CN',
+  en: 'en_US',
+  'en-us': 'en_US',
+  en_us: 'en_US',
+};
+
+/**
+ * 将任意语言标识解析为规范的 Locale
+ *
+ * @function resolveLocale
+ * @param {string | null | undefined} input - 语言标识字符串
+ * @returns {Locale | null} 规范 Locale 或 null
+ *
+ * @example
+ * resolveLocale('en-us') // 返回: 'en_US'
+ * resolveLocale('zh') // 返回: 'zh_CN'
+ * resolveLocale('invalid') // 返回: null
+ */
+export function resolveLocale(input?: string | null): Locale | null {
+  if (!input) return null;
+  if (isValidLocale(input)) return input;
+  const normalized = input.toLowerCase();
+  return localeAliasMap[normalized] || null;
 }
 
 /**
@@ -232,9 +263,10 @@ export function getLocalizedPath(path: string, locale: Locale): string {
   // 移除开头的斜杠
   const cleanPath = path.replace(/^\//, '');
   // 移除可能存在的语言前缀
-  const pathWithoutLocale = cleanPath.replace(/^(zh_CN|en_US)\//, '');
-  // 构建新路径
-  return `/${locale}/${pathWithoutLocale}`;
+  const pathWithoutLocale = cleanPath.replace(/^(zh_CN|en_US)(\/|$)/, '');
+  const trimmed = pathWithoutLocale.replace(/^\/+/, '');
+  // 构建新路径，确保根路径为 /${locale}/
+  return trimmed ? `/${locale}/${trimmed}` : `/${locale}/`;
 }
 
 /**

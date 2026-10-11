@@ -32,7 +32,7 @@
     "hero": {
         "subtitle": "WENJIE XU",
         "title": "<span class=\"inline-block\">保持好奇</span> <span class=\"inline-block\">保持自在</span>",
-        "description": "与来自不同领域的人合作，总能带来新的可能。<br>如果你希望<a href=\"mailto:wenjie.xu.cn@outlook.com\" class=\"underline\">联系我</a>，我很乐意与你交流！"
+        "description": "与来自不同领域的人合作，总能带来新的可能。<br>如果你希望<a href=\"/zh_CN/contact/\" class=\"underline\">联系我</a>，我很乐意与你交流！"
     },
     "websites": {
         "title": "Websites",
@@ -239,7 +239,7 @@
         "form": {
             "subtitle": "PROJECT INTAKE",
             "title": "写下你的想法",
-            "note": "平均响应时间：<strong class=\"text-gray-700\">12h</strong>"
+            "note": "平均响应时间：<strong class=\"text-ink\">12h</strong>"
         },
         "actions": {
             "writeEmail": "写邮件",
@@ -273,18 +273,18 @@
             "items": [
                 {
                     "subtitle": "Data",
-                    "title": "数据洞察",
-                    "description": "多源异构数据挖掘与可视化"
+                    "title": "观数察象",
+                    "description": "捕捉现实痕迹，观照万物运行"
                 },
                 {
                     "subtitle": "Research",
-                    "title": "风险建模",
-                    "description": "复杂系统风险评估与仿真"
+                    "title": "研机求真",
+                    "description": "追溯深层机理，叩问复杂系统"
                 },
                 {
                     "subtitle": "Analysis",
-                    "title": "决策支持",
-                    "description": "不确定性下的应对策略与战略规划"
+                    "title": "析理洞见",
+                    "description": "穿透未知迷雾，启迪理性决策"
                 }
             ]
         }

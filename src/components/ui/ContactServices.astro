@@ -1,0 +1,32 @@
+---
+/**
+ * ContactServices.astro
+ * 联系页面服务折页目录展示（纯静态组件）
+ */
+interface ServiceItem {
+  subtitle: string;
+  title: string;
+  description: string;
+}
+
+interface Props {
+  services: {
+    items: ServiceItem[];
+  };
+}
+
+const { services } = Astro.props;
+---
+
+<section class='mb-12 sm:mb-16 md:mb-20'>
+  <div class='grid md:grid-cols-3 gap-x-10 gap-y-8'>
+    {services.items.map((item, index) => (
+      <article class='border-t border-hairline pt-6'>
+        <p class='font-display italic text-vermilion text-sm mb-3'>No. 0{index + 1}</p>
+        <p class='eyebrow text-inksoft text-xs mb-2'>{item.subtitle}</p>
+        <h3 class='text-xl font-semibold display-font mb-2'>{item.title}</h3>
+        <p class='text-inksoft text-sm leading-relaxed'>{item.description}</p>
+      </article>
+    ))}
+  </div>
+</section>

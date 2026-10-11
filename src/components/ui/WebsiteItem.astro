@@ -9,7 +9,7 @@
  * @component
  */
 import { resolveContentHref } from '@lib/utils';
-import { getWebsiteImage } from '@lib/websiteImages';
+import { getLocalImage } from '@lib/localImages';
 import { Image } from 'astro:assets';
 import type { Locale } from '@lib/i18n';
 
@@ -52,7 +52,7 @@ const isExternal = typeof href === 'string' && href.startsWith('http');
 const isValidHref = typeof href === 'string' && href.trim() !== '' && href !== '#';
 
 // 获取本地优化图片：i18n中保存的是文件名，通过映射拿到ImageMetadata才能被Astro优化
-const localImage = getWebsiteImage(item.image);
+const localImage = getLocalImage(item.image);
 ---
 
 {/* 网站卡片容器：平贴纸面，不做胶囊底色 */}
@@ -64,51 +64,44 @@ const localImage = getWebsiteImage(item.image);
   class='group flex flex-row sm:flex-col gap-4 sm:gap-3 p-3 -mx-3 sm:mx-0 items-center sm:items-stretch'
 >
   {/* 图片容器：方形图版框（发丝线细框） */}
-  <div
-    class='relative w-24 sm:w-full shrink-0 aspect-[16/9] overflow-hidden bg-raised ring-1 ring-hairline'
-  >
-    {
-      localImage ? (
-        /* 优化后的本地图片 */
-        <Image
-          src={localImage}
-          alt={item.title}
-          width={640}
-          height={360}
-          widths={[384, 640]}
-          layout='constrained'
-          sizes='(max-width: 640px) 100vw, 384px'
-          fit='cover'
-          position='center'
-          format='webp'
-          quality={80}
-          priority={priority}
-          class='w-full h-full object-cover'
-        />
-      ) : (
-        /* 备用图片 */
-        <img
-          src={item.image}
-          alt={item.title}
-          width={640}
-          height={360}
-          loading={priority ? 'eager' : 'lazy'}
-          decoding='async'
-          fetchpriority={priority ? 'high' : 'auto'}
-          sizes='(max-width: 640px) 100vw, 384px'
-          class='w-full h-full object-cover'
-        />
-      )
-    }
+  <div class='relative w-24 sm:w-full shrink-0 aspect-[16/9] overflow-hidden bg-raised ring-1 ring-hairline'>
+    {localImage ? (
+      /* 优化后的本地图片 */
+      <Image
+        src={localImage}
+        alt={item.title}
+        width={640}
+        height={360}
+        widths={[384, 640]}
+        sizes='(max-width: 640px) 100vw, 384px'
+        format='webp'
+        quality={80}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding='async'
+        fetchpriority={priority ? 'high' : 'auto'}
+        class='w-full h-full object-cover'
+      />
+    ) : (
+      /* 备用图片 */
+      <img
+        src={item.image}
+        alt={item.title}
+        width={640}
+        height={360}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding='async'
+        fetchpriority={priority ? 'high' : 'auto'}
+        sizes='(max-width: 640px) 100vw, 384px'
+        class='w-full h-full object-cover'
+      />
+    )}
   </div>
 
   {/* 内容区域：标题和描述 */}
   <div class='flex flex-col min-w-0 flex-grow px-0 sm:px-1'>
     {/* 标题行：包含标题和箭头图标 */}
     <div class='flex items-center justify-between'>
-      <h3
-        class='link-underline self-start text-base font-semibold text-ink transition-colors pr-2'
-      >
+      <h3 class='link-underline self-start text-base font-semibold text-ink transition-colors pr-2'>
         {item.title}
       </h3>
       {/* 外部链接指示箭头：悬停时淡入，不做位移 */}
@@ -122,7 +115,8 @@ const localImage = getWebsiteImage(item.image);
           stroke-linecap='round'
           stroke-linejoin='round'
           stroke-width='1.5'
-          d='M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14'></path>
+          d='M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14'
+        ></path>
       </svg>
     </div>
 

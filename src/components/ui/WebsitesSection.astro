@@ -44,20 +44,18 @@ const { title = 'Websites', items = [], language = 'zh_CN' as Locale } = Astro.p
 ---
 
 {/* 条件渲染：仅在有网站数据时显示区块 */}
-{
-  items && items.length > 0 && (
-    /* 网站列表区块容器 */
-    <section class='mb-12 sm:mb-16 md:mb-20'>
-      {/* 区块标题 */}
-      <h2 class='text-2xl sm:text-3xl font-normal mb-8 sm:mb-10 display-font'>{title}</h2>
+{items && items.length > 0 && (
+  /* 网站列表区块容器 */
+  <section class='mb-12 sm:mb-16 md:mb-20'>
+    {/* 区块标题 */}
+    <h2 class='text-2xl sm:text-3xl font-semibold mb-8 sm:mb-10 display-font'>{title}</h2>
 
-      {/* 网站卡片网格布局 */}
-      <div class='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6'>
-        {items.map((item, index) => (
-          /* 网站卡片：前两个卡片设置优先加载 */
-          <WebsiteItem item={item} priority={index < 2} language={language} />
-        ))}
-      </div>
-    </section>
-  )
-}
+    {/* 网站卡片网格布局 */}
+    <div class='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6'>
+      {items.map((item, index) => (
+        /* 网站卡片：前两个卡片设置优先加载 */
+        <WebsiteItem item={item} priority={index < 2} language={language} />
+      ))}
+    </div>
+  </section>
+)}
