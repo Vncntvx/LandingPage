@@ -38,25 +38,11 @@
         "title": "Websites",
         "items": [
             {
-                "id": "Dashboard",
-                "title": "Work Dashboard",
-                "image": "/websites/dashboard.png",
-                "url": "https://dashboard.wenjiexu.site",
-                "description": "My self-hosted Glance work dashboard that aggregates information and common tools"
-            },
-            {
                 "id": "blog",
                 "title": "Personal Blog",
                 "image": "/websites/blogpage.png",
                 "url": "https://blog.wenjiexu.site",
                 "description": "Sharing personal articles, including tech insights, research experiences and life reflections"
-            },
-            {
-                "id": "projects",
-                "title": "Personal Projects",
-                "image": "/websites/project.png",
-                "url": "https://lab.wenjiexu.site/projects",
-                "description": "Explore my academic research projects and open-source works"
             },
             {
                 "id": "personal",

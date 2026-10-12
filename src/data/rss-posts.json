@@ -65,10 +65,10 @@
     },
     {
       "id": "rss-zh_CN-3-ec13ea17",
-      "title": "Unix-like 系统配置记录 (macOS &amp; Linux)",
+      "title": "Unix-like 系统配置记录 (macOS & Linux)",
       "description": "macOS 和 Linux 系统软件配置和常见问题解决方案的记录",
       "url": "https://blog.wenjiexu.site/zh/posts/unix-system-setup/",
-      "image": "https://picsum.photos/seed/7ba2b96f/600/350.jpg",
+      "image": "https://picsum.photos/seed/5058ca5f/600/350.jpg",
       "pubDate": "2025-05-05T15:03:53.000Z",
       "categories": [
         "Tools",
@@ -195,10 +195,10 @@
     },
     {
       "id": "rss-en_US-3-327cb08e",
-      "title": "Unix-like System Setup Notes (macOS &amp; Linux)",
+      "title": "Unix-like System Setup Notes (macOS & Linux)",
       "description": "Practical setup tips and solutions for macOS and Linux (Unix-like) systems",
       "url": "https://blog.wenjiexu.site/en/posts/unix-system-setup/",
-      "image": "https://picsum.photos/seed/8db2ba0c/600/350.jpg",
+      "image": "https://picsum.photos/seed/5444fdff/600/350.jpg",
       "pubDate": "2025-05-05T15:03:53.000Z",
       "categories": [
         "Tools",

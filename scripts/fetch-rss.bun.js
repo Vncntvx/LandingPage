@@ -165,8 +165,39 @@ async function fetchWithRetry(url, options = {}) {
 }
 
 /**
+ * XML/HTML 预定义实体表
+ * @description RSS/Atom feed 中的文本节点已按 XML 规范转义，提取后需解码回原文；
+ * 按 XML 1.0 规范，未知实体一律视为格式错误，故只列出五个预定义实体
+ * @type {Object.<string, string>}
+ */
+const XML_ENTITIES = {
+  '&amp;': '&',
+  '&lt;': '<',
+  '&gt;': '>',
+  '&quot;': '"',
+  '&apos;': "'",
+};
+
+/**
+ * 解码 XML 预定义实体
+ * @description 将 &amp; &lt; &gt; &quot; &apos; 还原为对应字符；
+ * 由于 XML 实体不可嵌套，单次顺序替换即可处理 &amp;amp; 这类双重转义
+ * @param {string} text - 可能包含 XML 实体的字符串
+ * @returns {string} 解码后的字符串
+ * @example
+ * ```javascript
+ * console.log(decodeXmlEntities('macOS &amp; Linux'));
+ * // 输出: 'macOS & Linux'
+ * ```
+ */
+function decodeXmlEntities(text) {
+  if (!text) return '';
+  return text.replace(/&(amp|lt|gt|quot|apos);/g, match => XML_ENTITIES[match]).trim();
+}
+
+/**
  * 清理 HTML 标签和 CDATA 段落
- * @description 移除 HTML 标签和 CDATA 标记，返回纯文本内容
+ * @description 先移除 HTML 标签和 CDATA 标记，再解码 XML 实体，返回纯文本内容
  * @param {string} html - 包含 HTML 标签的字符串
  * @returns {string} 清理后的纯文本
  * @example
@@ -177,15 +208,14 @@ async function fetchWithRetry(url, options = {}) {
  */
 function stripHtml(html) {
   if (!html) return '';
-  return html
-    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/gi, '$1')
-    .replace(/<[^>]+>/g, '')
-    .trim();
+  return decodeXmlEntities(
+    html.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/gi, '$1').replace(/<[^>]+>/g, '')
+  );
 }
 
 /**
  * 从 XML 内容中提取指定标签的内容
- * @description 使用正则表达式匹配标签内容，支持属性和嵌套内容
+ * @description 使用正则表达式匹配标签内容，支持属性和嵌套内容，并解码 XML 实体
  * @param {string} xml - XML 字符串
  * @param {string} tagName - 要提取的标签名
  * @returns {string|null} 标签内容，如果未找到则返回 null
@@ -199,7 +229,7 @@ function getTagContent(xml, tagName) {
   const regex = new RegExp(`<${tagName}(?:\\s+[^>]*)?>([\\s\\S]*?)<\\/${tagName}>`, 'i');
   const match = xml.match(regex);
   if (!match) return null;
-  return match[1].replace(/<!\[CDATA\[([\s\S]*?)\]\]>/gi, '$1').trim();
+  return decodeXmlEntities(match[1].replace(/<!\[CDATA\[([\s\S]*?)\]\]>/gi, '$1'));
 }
 
 /**
@@ -218,7 +248,7 @@ function getLinkHref(xml) {
   const hrefMatch = xml.match(/<link[^>]*href=["']([^"']+)["'][^>]*>/i);
   if (hrefMatch) {
     // 修复 URL 中的双斜杠问题
-    return hrefMatch[1].replace(/([^:])(\/\/+)/g, '$1/');
+    return decodeXmlEntities(hrefMatch[1]).replace(/([^:])(\/\/+)/g, '$1/');
   }
 
   // RSS 格式: <link>...</link>
@@ -248,8 +278,9 @@ function getCategories(xml) {
   const termRegex = /<category[^>]*term=["']([^"']+)["'][^>]*>/gi;
   let match;
   while ((match = termRegex.exec(xml)) !== null) {
-    if (!categories.includes(match[1])) {
-      categories.push(match[1]);
+    const term = decodeXmlEntities(match[1]);
+    if (term && !categories.includes(term)) {
+      categories.push(term);
     }
   }
 

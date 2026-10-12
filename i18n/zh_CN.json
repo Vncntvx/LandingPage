@@ -38,25 +38,11 @@
         "title": "Websites",
         "items": [
             {
-                "id": "Dashboard",
-                "title": "工作仪表板",
-                "image": "/websites/dashboard.png",
-                "url": "https://dashboard.wenjiexu.site",
-                "description": "我的自托管 Glance 工作仪表板，聚合关注信息和常用工具"
-            },
-            {
                 "id": "blog",
                 "title": "个人博客",
                 "image": "/websites/blogpage.png",
                 "url": "https://blog.wenjiexu.site",
                 "description": "分享个人文章，包括技术分享、研究心得和生活感悟"
-            },
-            {
-                "id": "projects",
-                "title": "个人项目",
-                "image": "/websites/project.png",
-                "url": "https://lab.wenjiexu.site/projects",
-                "description": "探索我的学术研究项目和开源作品"
             },
             {
                 "id": "personal",
